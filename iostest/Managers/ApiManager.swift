@@ -14,13 +14,13 @@ class ApiManager {
     static var shared = ApiManager()
     let BASE_URL: String = "https://shoppapp.liverpool.com.mx/appclienteservices/services/v3/plp"
     
-    func getRecordsFromApi(searchString: String, completion: @escaping (Bool, [Record]) -> Void) {
+    func getRecordsFromApi(searchString: String, pageNumber: Int, itemsPerPage: Int, completion: @escaping (Bool, ApiResponse?) -> Void) {
         
         let parameters: [String: Any] = [
             "force-plp" : true,
             "search-string" : searchString,
-            "page-number" : 1,
-            "number-of-items-per-page" : 5
+            "page-number" : pageNumber,
+            "number-of-items-per-page" : itemsPerPage
         ]
         
         Alamofire.request(
@@ -34,14 +34,13 @@ class ApiManager {
             case .success(_):
                 let apiResponse = try? JSONDecoder().decode(ApiResponse.self, from: response.data!)
                 debugPrint("records found: \(apiResponse?.plpResults.records.count ?? 0)")
-                completion(true, (apiResponse?.plpResults.records)!)
+                completion(true, apiResponse)
             case .failure(_):
                 debugPrint("no records found")
-                completion(false, [Record]())
+                completion(false, nil)
             }
             
-            
-        }
     }
-    
+        
+}
 }

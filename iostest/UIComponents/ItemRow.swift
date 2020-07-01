@@ -14,7 +14,7 @@ struct ItemRow: View {
     @Environment(\.imageCache) var cache: ImageCache
 
     var body: some View {
-        HStack {
+        HStack(alignment: .center, spacing: 5.0) {
             AsyncImage(
                 url: URL(string: item.smImage)!,
                 cache: self.cache,
