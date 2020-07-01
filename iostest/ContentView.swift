@@ -17,9 +17,14 @@ struct ContentView: View {
     @State private var itemsPerPage = 10
     @State private var itemList = [Record]()
 //    @State private var totalPages = 1..<2
-    
+    let defaults = UserDefaults.standard
+    @State private var searchHistory = [String]()
     
     private func fetchData(){
+        
+        self.searchHistory.append(self.searchText)
+        defaults.set(self.searchHistory, forKey: "History")
+        
         ApiManager.shared.getRecordsFromApi(
             searchString: self.searchText,
             pageNumber: self.currentPage,
@@ -37,6 +42,7 @@ struct ContentView: View {
                 }
         })
         
+        self.searchHistory = self.defaults.object(forKey: "History") as? [String] ?? [String]()
         
     }
     
@@ -45,6 +51,17 @@ struct ContentView: View {
             TextField("Buscar un producto",text: $searchText)
             .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(10.0)
+                .contextMenu {
+                    ForEach (self.searchHistory, id: \.self) {item in
+                        Button(action: {
+                            self.searchText = item
+                            self.fetchData()
+                        }) {
+                            Text(item)
+                        }
+                    }
+            }
+        
             
             Button(action: {
                 
@@ -146,6 +163,8 @@ struct ContentView: View {
             }.padding(10.0)
             
             
+        }.onAppear{
+            self.searchHistory = self.defaults.object(forKey: "History") as? [String] ?? [String]()
         }
     }
 }
