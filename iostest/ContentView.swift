@@ -24,6 +24,7 @@ struct ContentView: View {
         
         self.searchHistory.append(self.searchText)
         defaults.set(self.searchHistory, forKey: "History")
+        self.currentPage = 1
         
         ApiManager.shared.getRecordsFromApi(
             searchString: self.searchText,
@@ -31,7 +32,7 @@ struct ContentView: View {
             itemsPerPage: self.itemsPerPage,
             completion: {dataIsReady, response in
                 
-                if (response?.plpResults.records.count != 0){
+                if (response?.plpResults.records != nil){
                 
                     self.itemList = response!.plpResults.records
                     self.totalRecs = String(response!.plpResults.plpState.totalNumRecs)
