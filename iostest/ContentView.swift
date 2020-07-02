@@ -24,7 +24,6 @@ struct ContentView: View {
         
         self.searchHistory.append(self.searchText)
         defaults.set(self.searchHistory, forKey: "History")
-        self.currentPage = 1
         
         ApiManager.shared.getRecordsFromApi(
             searchString: self.searchText,
